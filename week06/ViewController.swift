@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ViewController: UIViewController {
 
@@ -21,25 +22,38 @@ class ViewController: UIViewController {
     @IBOutlet weak var emp2: UIButton!
     @IBOutlet weak var emp3: UIButton!
     
+    @IBOutlet weak var ownerimg: UIImageView!
     @IBOutlet weak var img1: UIImageView!
     @IBOutlet weak var img2: UIImageView!
     @IBOutlet weak var img3: UIImageView!
     
     var plus = 100000
-    var day = 1
+    var day = 0
     var money = 1000000
     var employees = 0
     var joindates = [0,0,0]
     var hp = [0,0,0]
     var spend: Double = 1000000
     var onoff: Bool = false
-    let imgs = ["https://post-phinf.pstatic.net/MjAyMDA5MzBfNzYg/MDAxNjAxMzkzMzU3NDAy.cqLuKzwxumCmUKf0vHtU_8QxpjNLGoJZLsVxQDgHhAEg.Vuc1_1hFe1PtJ9_kuNyUeLCUT-3ZGlqtRpceXDsUnUcg.PNG/img-200929_01_15.png?type=w1200",
-    "http://appdata.hungryapp.co.kr/data_file/data_img/201607/13/W14683947086778429.png/hungryapp/resize/500",
-    "https://mblogthumb-phinf.pstatic.net/MjAxNzAyMjJfMTg3/MDAxNDg3NzI4NTQ2NjYz.PXKT8WOvIrVgUamJQqSIGdwjeUHlO6GKKQBJrcHejLsg.EgM4jWM1lZh3NGoC2BUgXQ2aFzqQnSCh8ivhMmT7wWUg.PNG.ioea65ztem/02.%EA%B5%AC%EA%B8%80.png?type=w800",
-    "https://img.etoday.co.kr/pto_db/2015/09/600/20150919114509_715074_495_277.81250208395556.jpg"]
+    
+    let url1 = URL(string: "https://mblogthumb-phinf.pstatic.net/MjAxNzAyMjJfMTg3/MDAxNDg3NzI4NTQ2NjYz.PXKT8WOvIrVgUamJQqSIGdwjeUHlO6GKKQBJrcHejLsg.EgM4jWM1lZh3NGoC2BUgXQ2aFzqQnSCh8ivhMmT7wWUg.PNG.ioea65ztem/02.%EA%B5%AC%EA%B8%80.png?type=w800")
+    let url2 = URL(string: "https://itmoulds.com/media_cdn/images/content-froala/2020-05-18/ksr20/134309-1589776989590.jpg")
+    let url3 = URL(string: "https://www.anewsa.com/news_images/2019/06/19/mark/2019061914091012914278835d09c376b30ab6.11882883.jpg")
+    let url0 = URL(string: "https://post-phinf.pstatic.net/MjAyMDA5MzBfNzYg/MDAxNjAxMzkzMzU3NDAy.cqLuKzwxumCmUKf0vHtU_8QxpjNLGoJZLsVxQDgHhAEg.Vuc1_1hFe1PtJ9_kuNyUeLCUT-3ZGlqtRpceXDsUnUcg.PNG/img-200929_01_15.png?type=w1200")
+    let close = URL(string: "https://cdn.gamemeca.com/data_center/192/382/20191013124203.jpg")
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        ownerimg.kf.setImage(with: url0)
+        
+        img1.alpha = 0.0
+        img2.alpha = 0.0
+        img3.alpha = 0.0
+        img1.kf.setImage(with: url1)
+        img2.kf.setImage(with: url2)
+        img3.kf.setImage(with: url3)
         
         start()
 
@@ -56,36 +70,70 @@ class ViewController: UIViewController {
                     self.money = self.money + (self.plus+profit)
                     self.account.text = String(self.money)
                     self.days.text = "DAY \(self.day)"
+                    
+                    if (self.employees == 3) {
+                        UIView.animate(withDuration: 0.3, animations: {
+                            self.img1.transform = CGAffineTransform(translationX: 0, y: -30)
+                            self.img2.transform = CGAffineTransform(translationX: 0, y: -25)
+                            self.img3.transform = CGAffineTransform(translationX: 0, y: -30)
+                        })
+                                
+                        self.img1.transform = CGAffineTransform(translationX: 0, y: 0)
+                        self.img2.transform = CGAffineTransform(translationX: 0, y: 0)
+                        self.img3.transform = CGAffineTransform(translationX: 0, y: 0)
+                    }
                 }
                 
                 DispatchQueue.main.async {
                     
                     if self.day == 1 { self.msg.text = "당신은 그냥 한번 회사를 차려봤습니다" }
-                    if self.day == 3 { self.msg.text = "우선은 직원을 채용해보는 게 좋겠네요" }
-                    if self.day == 5 { self.msg.text = "일단 직원이 있어야 회사니까요" }
+                    if self.day == 3 { self.msg.text = "우선은 직원을 채용해보는 게 좋겠습니다" }
+                    if self.day == 5 { self.msg.text = "소개비가 비싸니 신중하세요" }
 
                     if self.day > 29 && self.day % 30 == 0 {
                         self.msg.text = "월급날입니다"
                     }
                 }
+                
 
                 usleep(useconds_t(self.spend))
                 day += 1
                 spend = spend * 0.98
-
+                
                 if (onoff == true && self.money < 0) {
                     DispatchQueue.main.async {
+                        onoff = false
                         self.account.text = String(self.money)
                         self.msg.text = "망했습니다"
-                        onoff = false
+                        self.ownerimg.kf.setImage(with: close)
+                        
                     }
                     break
                 }
                 
                 if (onoff == true && employees == 0) {
                     DispatchQueue.main.async {
-                        self.msg.text = "더 이상 일할 사람이 없는 것 같습니다."
                         onoff = false
+                        self.msg.text = "더 이상 일할 사람이 없는 것 같습니다."
+                        self.ownerimg.kf.setImage(with: close)
+                        
+                    }
+                    break
+                }
+                
+                if (onoff == true && spend < 0.1) {
+                    DispatchQueue.main.async {
+                        onoff = false
+                        
+                        self.account.text = String(self.money)
+                        self.msg.text = "당신은 이제 너무 늙었습니다. 세월이 야속하네요..."
+                        self.ownerimg.kf.setImage(with: close)
+                        
+                        img1.isHidden = true
+                        img2.isHidden = true
+                        img3.isHidden = true
+                        
+                        
                     }
                     break
                 }
@@ -158,14 +206,13 @@ class ViewController: UIViewController {
     
     @IBAction func recruit(_ btn: UIButton, _ num: Int) {
         
-        onoff = true
-        
         let btntitle = btn.currentTitle ?? "채용"
         
         if (btntitle.contains("채용")) {
             if money < 1900000 {
                 self.msg.text = "아무도 거지같은 회사에 오려하지 않습니다"
             } else {
+                onoff = true
                 money -= 500000
                 employees += 1
                 hp[num] = 80
@@ -175,13 +222,32 @@ class ViewController: UIViewController {
                 switch(employees) {
                 case 1: msg.text = "첫 번째 직원이 생겼습니다"
                 case 2: msg.text = "두 번째 직원이 생겼습니다"
-                case 3: msg.text = "세 번째 직원이 생겼습니다"
+                case 3:
+                    msg.text = "세 번째 직원이 생겼습니다"
+                    plushp(10)
                 default:
                     return
                 }
-                        
+
                 btn.setTitle("내보내기", for: .normal)
         //      emp1.isEnabled = false
+                
+                switch(num) {
+                case 0:
+                    img1.alpha = 1.0
+                case 1:
+                    img2.alpha = 1.0
+                case 2:
+                    img3.alpha = 1.0
+                default:
+                    return
+                }
+                
+                if (employees == 3) {
+                    
+                    msg.text = "조금 회사다워졌어요!"
+                    
+                }
             }
                     
         } else {
@@ -194,6 +260,16 @@ class ViewController: UIViewController {
                 hp[num] = -1
                 joindates[num] = -1
                 btn.setTitle("채용", for: .normal)
+                switch(num) {
+                case 0:
+                    img1.alpha = 0.0
+                case 1:
+                    img2.alpha = 0.0
+                case 2:
+                    img3.alpha = 0.0
+                default:
+                    return
+                }
             }
                 
         }
@@ -216,7 +292,7 @@ class ViewController: UIViewController {
             }
             DispatchQueue.main.async {
                 print("a: \(self.joindates[0]), a: \(self.joindates[1]), a: \(self.joindates[2])")
-                self.msg.text = "임금 체불로 신고당했습니다."
+                self.msg.text = "임금 체불로 신고당했습니다. 벌금이 나갑니다."
                 self.money -= 2000000
                 self.plushp(-20)
             }
@@ -226,7 +302,7 @@ class ViewController: UIViewController {
     func hpcheck(_ btn: UIButton, num: Int) {
         DispatchQueue.global().async {
             
-            while(self.hp[num] >= 0) {
+            while(self.hp[num] >= 0 && self.onoff == true) {
                 usleep(useconds_t(self.spend*1.5))
                 self.hp[num] -= 1
                 
@@ -244,8 +320,34 @@ class ViewController: UIViewController {
                 self.plushp(-30)
                 self.hp[num] = -1
                 self.joindates[num] = -1
+                switch(num) {
+                case 0: self.img1.alpha = 0.0
+                case 1: self.img2.alpha = 0.0
+                case 2: self.img3.alpha = 0.0
+                default: return
+                }
             }
         }
     }
 }
+
+//extension UIImageView {
+//    func setImage(with urlString: String) {
+//        let cache = ImageCache.default
+//        cache.retrieveImage(forKey: urlString, options: nil) { result in
+//            switch result {
+//            case .success(let value):
+//                if let image = value.image {
+//                    self.image = image
+//                } else {
+//                    guard let url = URL(string: urlString) else { return }
+//                    let resource = ImageResource(downloadURL: url, cacheKey: urlString)
+//                    self.kf.setImage(with: resource)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }
+//}
 
