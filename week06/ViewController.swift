@@ -90,7 +90,7 @@ class ViewController: UIViewController {
                     if self.day == 3 { self.msg.text = "우선은 직원을 채용해보는 게 좋겠습니다" }
                     if self.day == 5 { self.msg.text = "소개비가 비싸니 신중하세요" }
 
-                    if self.day > 29 && self.day % 30 == 0 {
+                    if self.day > 29 && self.day % 30 == 0 && self.employees > 0 {
                         self.msg.text = "월급날입니다"
                     }
                 }
@@ -121,7 +121,7 @@ class ViewController: UIViewController {
                     break
                 }
                 
-                if (onoff == true && spend < 0.1) {
+                if (onoff == true && day > 5000) {
                     DispatchQueue.main.async {
                         onoff = false
                         
@@ -163,6 +163,9 @@ class ViewController: UIViewController {
         
         if employees == 0 {
             self.msg.text = "일단 사람을 쓰세요"
+        } else if (money < employees * 1900000) {
+            self.msg.text = "지금은 회사 사정이 어렵습니다. 다음에..."
+            plushp(-5)
         } else {
             money -= employees * 1900000
             if (self.day < 30) {
